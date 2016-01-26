@@ -32,3 +32,31 @@ describe('exercises', function(){
 		expect(foobar).to.have.been.called.exactly(3);
 	})
 })
+
+//PAGE PROPERTIES
+// required properties of page
+//check that emails unique?
+
+//HTML supertest
+// page statuses 404 /201 etc
+// check that url title doesnt include spaces, non-alphanumeric
+
+//USER TESTS
+// can get user by user id
+
+//MODEL METHODS
+// check find by tag
+// check find similar
+
+//TAGS
+// verify page by tag property - search by tag
+
+//CREATE POST
+// check that new user created after posting
+// submit creates post rest to right URI
+
+
+//DB test?
+// database records increased by 1
+
+
