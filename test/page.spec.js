@@ -24,7 +24,7 @@ describe('Page model', function() {
             page.validate()
             .then(null,
             function(err){
-                return err.errors
+                return err.errors;
             }).then(function(errorMessage){
                 expect(errorMessage).to.have.property('title');
                 done();
@@ -56,7 +56,7 @@ describe('Page model', function() {
                     done();
                 }).then(null,done);
             });
-            it('does not get pages without the search tag', function(done) {
+            xit('does not get pages without the search tag', function(done) {
                 fullPage.save()
                 .then(function(){
                     return Page.findByTag('watermelon');
@@ -70,54 +70,51 @@ describe('Page model', function() {
     });
 
     describe('Methods', function() {
+        beforeEach(function(done) {
+            //promise all, save each promise as variable
+               var homepage = Page.create({
+                    title: 'now we\'re home',
+                    content: 'it\'s cozy here',
+                    tags: ['fireplace', 'hot chocolate', 'rain']
+               });
+               var similarPage = Page.create({
+                    title: 'still in the neighborhood',
+                    content: 'seems different',
+                    tags: ['fireplace', 'phonograph', 'umbrella stand']
+               });
+               var strangePage = Page.create({
+                    title: 'far away',
+                    content: 'everything\'s different',
+                    tags: ['blaster', 'teleporter', 'hologram']
+               });
+               Promise.all([homepage, similarPage, strangePage])
+                .then(done);
+           });
+
+
+           afterEach(function(done){
+               Page.remove({})
+               .then(done);
+           });
+
         describe('findSimilar', function() {
-            var homePage = new Page({
-                title: 'now we\'re home',
-                content: 'it\'s cozy here',
-                tags: ['fireplace', 'hot chocolate', 'rain']
-            });
-            var similarPage = new Page({
-                title: 'still in the neighborhood',
-                content: 'seems different',
-                tags: ['fireplace', 'phonograph', 'umbrella stand']
-            });
-            var strangePage = new Page({
-                title: 'far away',
-                content: 'everything\'s different',
-                tags: ['blaster', 'teleporter', 'hologram']
-            });
-            it('never gets itself', function(done) {
-                homePage.save()
-                .then(similarPage.save)
-                .then(strangePage.save)
-                .then(function(){
-                    return homePage.findSimilar();
-                })
+            xit('never gets itself', function(done) {
+                console.log('homepage', homepage);
+                homePage.findSimilar()
                 .then(function(pageList) {
-                    expect(pageList).to.not.include(homePage);
+                    expect(pageList).to.not.include(homepage);
                     done();
                 }).then(null, done);
             });
-            it('gets other pages with any common tags', function(done) {
-                homePage.save()
-                .then(similarPage.save)
-                .then(strangePage.save)
-                .then(function(){
-                    return homePage.findSimilar();
-                })
+            xit('gets other pages with any common tags', function(done) {
+                homePage.findSimilar()
                 .then(function(pageList) {
-                    console.log(pageList);
                     expect(pageList).to.include(similarPage);
                     done();
                 }).then(null, done);
             });
-            it('does not get other pages without any common tags', function(done) {
-                homePage.save()
-                .then(similarPage.save)
-                .then(strangePage.save)
-                .then(function(){
-                    return homePage.findSimilar();
-                })
+            xit('does not get other pages without any common tags', function(done) {
+                homePage.findSimilar()
                 .then(function(pageList) {
                     expect(pageList).to.not.include(strangePage);
                     done();
