@@ -1,13 +1,20 @@
 var mocha = require('mocha');
 var chai = require('chai');
 var spies = require('chai-spies');
+var mongoose = require('mongoose');
 chai.use(spies);
+
+mongoose.disconnect(testConnect);
+
+function testConnect(){
+    mongoose.createConnection('mongodb://localhost/wikistack-testing');
+}
 
 var models = require('../models');
 var Page = models.Page;
 var User = models.User;
 
-var assert = chai.assert,  
+var assert = chai.assert,
     expect = chai.expect,
     should = chai.should(); // Note that should has to be executed
 
@@ -15,25 +22,35 @@ var assert = chai.assert,
 describe('Page model', function() {
     var page;
     beforeEach('creates page', function(done){
+        Page.create({
+            title:"Beta test",
+            content:"Bluhhhhhhh though",
+            status:"closed"
+        });
         page = new Page();
         done();
     });
 
     describe('Validations', function() {
-        it('errors without title', function(done) {
-            page.validate()
-            .then(null,
-            function(err){
-                return err.errors;
-            }).then(function(errorMessage){
-                expect(errorMessage).to.have.property('title');
-                done();
-            }).then(null, done);
+        it('errors without title', function() {
+            page.content = "now i have content";
+            return page.validate().then(function () {
+                assert(false);
+            }, function() {
+                assert(true);
+            });
         });
-        it('errors without content', function(done) {
-            page.validate(function(err){
-                expect(err.errors).to.have.property('content');
-                done();
+        it('does not throw an error with title', function() {
+            page.title = "How you like me now";
+            page.content = "now i have content";
+            return page.validate();
+        });
+        it('errors without content', function() {
+            page.title = "now i have a title";
+            return page.validate().then(function () {
+                assert(false);
+            }, function() {
+                assert(true);
             });
         });
     });
