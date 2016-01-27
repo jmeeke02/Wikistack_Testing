@@ -63,7 +63,7 @@ pageSchema.statics.findByTag = function (tag) {
 };
 
 pageSchema.methods.findSimilar = function () {
-
+    console.log("this", this);
     return Page.find({
         tags: {
             $in: this.tags
